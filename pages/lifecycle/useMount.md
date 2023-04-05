@@ -1,0 +1,24 @@
+# [useMount](https://ahooks.js.org/zh-CN/hooks/use-mount)
+
+`useMount` 用于组件挂载时的副作用处理。
+
+```typescript
+useEffect(() => {
+    fn?.();
+}, []);
+```
+
+实现主要依赖于 [`useEffect`](https://react.dev/reference/react/useEffect)。`useEffect` 是 react 的原生 hook。
+
+```javascript
+useEffect(setup, dependencies?)
+```
+
+传递的 `setup` 函数会在组件第一次添加到 DOM 时执行，并且组件在每次重新渲染后根据 `dependencies` 的变化也会执行 `setup`。
+
+- 如果 `dependencies` 没有提供的话则每次重新渲染后都会执行 `setup`;
+- 如果传递了参数的话会比较渲染前后的 `dependencies` 内部的值是否
+发生了变化，如果变化了的话则会执行 `setup`，没有变化的话则不会执行;
+- 如果传递的是空数组的话就只会在第一次添加到 DOM 时执行；
+
+所以，这里只需要使用 `useEffect` 并将 `dependencies` 设置为空数组就可以达到 _挂载时副作用处理_ 的目的了。

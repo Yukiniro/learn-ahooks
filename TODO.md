@@ -20,7 +20,7 @@
 
 # LifeCycle
 
-[ ] useMount
+[x] useMount
 [ ] useUnmount
 [ ] useUnmountedRef
 

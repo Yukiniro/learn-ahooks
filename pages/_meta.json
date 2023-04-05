@@ -1,6 +1,7 @@
 {
   "index": "介绍",
   "scene": "Scene",
+  "lifecycle": "LifeCycle",
   "contact": {
     "title": "Twitter ↗",
     "type": "page",
