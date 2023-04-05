@@ -89,7 +89,7 @@
 [ ] useCreation
 [ ] useEventEmitter
 [ ] useIsomorphicLayoutEffect
-[ ] useLatest
+[x] useLatest
 [ ] useMemoizedFn
 [ ] useReactive
 
