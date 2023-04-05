@@ -21,7 +21,7 @@
 # LifeCycle
 
 [x] useMount
-[ ] useUnmount
+[x] useUnmount
 [ ] useUnmountedRef
 
 # State

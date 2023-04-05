@@ -1,0 +1,27 @@
+# [useUnmount](https://ahooks.js.org/zh-CN/hooks/use-unmount)
+
+useUnmout` 用于组件卸载时的副作用处理。
+
+```typescript
+const useUnmount = (fn: () => void) => {
+  // if dev...
+
+  const fnRef = useLatest(fn);
+
+  useEffect(
+    () => () => {
+      fnRef.current();
+    },
+    [],
+  );
+};
+```
+
+实现主要依赖于 [`useEffect`](https://react.dev/reference/react/useEffect)。`useEffect` 是 react 的原生 hook。
+
+```javascript
+useEffect(setup, dependencies?)
+```
+
+传递 `dependencies` 为一个空数组，这样 `setup` 调用后返回的函数就将在组件卸载时进行调用，
+然后为了避免闭包的问题，使用 `useLatest` 维持副作用函数（`fn`）的引用并在卸载时调用 `fnRef.current`。
