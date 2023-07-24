@@ -11,16 +11,16 @@
     "type": "git",
     "url": "git+https://github.com/Yukiniro/learn-ahooks"
   },
-  "author": "Shu Ding <g@shud.in>",
+  "author": "Yukiniro",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Yukiniro/learn-ahooks/issues"
   },
   "homepage": "https://github.com/Yukiniro/learn-ahooks#readme",
   "dependencies": {
-    "next": "^13.3.0",
-    "nextra": "latest",
-    "nextra-theme-docs": "latest",
+    "next": "^13.4.12",
+    "nextra": "^2.10.0",
+    "nextra-theme-docs": "^2.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
