@@ -1,6 +1,6 @@
 {
-    "useLatest": "useLatest",
     "useMount": "useMount",
     "useUnmount": "useUnmount",
-    "useUnmountedRef": "useUnmountedRef"
+    "useUnmountedRef": "useUnmountedRef",
+    "useLatest": "useLatest"
 }

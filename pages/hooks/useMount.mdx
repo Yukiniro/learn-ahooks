@@ -1,11 +1,17 @@
 # [useMount](https://ahooks.js.org/zh-CN/hooks/use-mount)
 
-`useMount` 用于组件挂载时的副作用处理。
+> `useMount` 用于组件挂载时的副作用处理。
+
+部分源码：
 
 ```tsx
-useEffect(() => {
+const useMount = (fn: () => void) => {
+  useEffect(() => {
     fn?.();
-}, []);
+  }, []);
+};
+
+export default useMount;
 ```
 
 实现主要依赖于 [`useEffect`](https://react.dev/reference/react/useEffect)。`useEffect` 是 react 的原生 hook。
@@ -21,4 +27,4 @@ useEffect(setup, dependencies?)
 发生了变化，如果变化了的话则会执行 `setup`，没有变化的话则不会执行;
 - 如果传递的是空数组的话就只会在第一次添加到 DOM 时执行；
 
-所以，这里只需要使用 `useEffect` 并将 `dependencies` 设置为空数组就可以达到 _挂载时副作用处理_ 的目的了。
+所以，这里只需要使用 `useEffect` 并将 `dependencies` 设置为空数组就可以达到**挂载**副作用处理的目的了。
