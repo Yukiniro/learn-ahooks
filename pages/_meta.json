@@ -1,9 +1,10 @@
 {
-  "index": "介绍",
+  "index": "Introduce",
   "contact": {
     "title": "Twitter ↗",
     "type": "page",
     "href": "https://twitter.com/Yukiro94317534",
     "newWindow": true
-  }
+  },
+  "hooks": "Hooks"
 }
