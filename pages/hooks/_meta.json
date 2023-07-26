@@ -3,5 +3,6 @@
     "use-unmount": "useUnmount",
     "use-unmounted-ref": "useUnmountedRef",
     "use-latest": "useLatest",
-    "use-toggle": "useToggle"
+    "use-toggle": "useToggle",
+    "use-set-state": "useSetState"
 }

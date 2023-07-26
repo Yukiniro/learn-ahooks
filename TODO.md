@@ -2,7 +2,7 @@
 - [x] useUnmount
 - [x] useUnmountedRef
 - [x] useLatest
-- [ ] useSetState
+- [x] useSetState
 - [ ] useBoolean
 - [x] useToggle
 - [ ] useMap

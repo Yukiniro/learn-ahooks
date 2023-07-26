@@ -1,0 +1,28 @@
+# useSetState
+
+> 管理 object 类型 state 的 Hooks，用法与 class 组件的 `this.setState` 基本一致。
+
+部分源码：
+
+```tsx
+const useSetState = <S extends Record<string, any>>(
+  initialState: S | (() => S),
+): [S, SetState<S>] => {
+  const [state, setState] = useState<S>(initialState);
+
+  const setMergeState = useCallback((patch) => {
+    setState((prevState) => {
+      const newState = isFunction(patch) ? patch(prevState) : patch;
+      return newState ? { ...prevState, ...newState } : prevState;
+    });
+  }, []);
+
+  return [state, setMergeState];
+};
+```
+
+`class` 组件中的 `this.setState` 会自动合并 `state`，而 `useState` 的 `setState` 不会自动合并，所以这里通过 `setMergeState` 来实现自动合并。
+
+实现本身比较简单，主要是用 `{ ...prevState, ...newState }` 语法。其次还用到了 `useCallback` 来缓存 `setMergeState` 函数，避免每次都创建新的函数。
+
+使用 `setMergeState` 时，可以传入一个对象，也可以传入一个函数，函数的参数是 `prevState`，返回值是一个对象，这个对象会和 `prevState` 合并。
