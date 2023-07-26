@@ -1,7 +1,7 @@
 {
-    "useMount": "useMount",
-    "useUnmount": "useUnmount",
-    "useUnmountedRef": "useUnmountedRef",
-    "useLatest": "useLatest",
-    "useToggle": "useToggle"
+    "use-mount": "useMount",
+    "use-unmount": "useUnmount",
+    "use-unmounted-ref": "useUnmountedRef",
+    "use-latest": "useLatest",
+    "use-toggle": "useToggle"
 }
