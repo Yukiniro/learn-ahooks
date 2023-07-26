@@ -2,5 +2,6 @@
     "useMount": "useMount",
     "useUnmount": "useUnmount",
     "useUnmountedRef": "useUnmountedRef",
-    "useLatest": "useLatest"
+    "useLatest": "useLatest",
+    "useToggle": "useToggle"
 }

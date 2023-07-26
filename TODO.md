@@ -4,7 +4,7 @@
 - [x] useLatest
 - [ ] useSetState
 - [ ] useBoolean
-- [ ] useToggle
+- [x] useToggle
 - [ ] useMap
 - [ ] useSet
 - [ ] useRafState

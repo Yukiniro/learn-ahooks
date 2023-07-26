@@ -1,0 +1,61 @@
+import { Callout } from 'nextra/components'
+
+# [useToggle](https://ahooks.js.org/zh-CN/hooks/use-toggel)
+
+> 用于在两个状态值间切换的 Hook。
+
+部分源码：
+
+```tsx
+function useToggle<D, R>(defaultValue: D = false as unknown as D, reverseValue?: R) {
+  const [state, setState] = useState<D | R>(defaultValue);
+
+  const actions = useMemo(() => {
+    const reverseValueOrigin = (reverseValue === undefined ? !defaultValue : reverseValue) as D | R;
+
+    const toggle = () => setState((s) => (s === defaultValue ? reverseValueOrigin : defaultValue));
+    const set = (value: D | R) => setState(value);
+    const setLeft = () => setState(defaultValue);
+    const setRight = () => setState(reverseValueOrigin);
+
+    return {
+      toggle,
+      set,
+      setLeft,
+      setRight,
+    };
+  }, []);
+
+  return [state, actions];
+}
+```
+
+`useToggle` 接收两个参数，第一个参数是默认值，第二个参数是反转值，如果两个参数都不传的话，那么默认值和反转值就是 `true` 和 `false`。
+
+一般来说，只传递一个参数或者都不传的场景适用于真假值的判断，比如：
+
+```tsx
+function Test() {
+    const [state, { toggel }] = useToggle(false);
+
+    // 点击按钮会在 true 和 false 之间切换
+    return <butto onClick={toggel}>{state}</button>
+}
+```
+
+如果传递两个参数的话，那么就可以用于切换两个值，比如：
+
+```tsx
+function Test() {
+    const [state, { toggel }] = useToggle('hello', 'world');
+
+    // 点击按钮会在 hello 和 world 之间切换
+    return <butto onClick={toggel}>{state}</button>
+}
+```
+
+`useToggle` 返回了四种方法，分别是 `toggle`、`set`、`setLeft`、`setRight`，这四种方法都是用于修改状态的，只不过 `toggle` 是在默认值和反转值之间切换，而 `set`、`setLeft`、`setRight` 则是直接设置状态值。
+
+`toggle` 在前面已经说了，主要用来进行切换。`setLeft` 和 `setRight` 也比较容易理解，就是分别设置默认值和反转值。`set` 则是直接设置状态值，这个方法可以接收一个参数并设置为传递的参数。
+
+<Callout>需要注意的是，`set` 的操作是一次性的，如果后面调用了其他接口（`toggle`）会将值设置为其他值。</Callout>
