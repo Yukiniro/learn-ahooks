@@ -3,7 +3,7 @@
 - [x] useUnmountedRef
 - [x] useLatest
 - [x] useSetState
-- [ ] useBoolean
+- [x] useBoolean
 - [x] useToggle
 - [ ] useMap
 - [ ] useSet

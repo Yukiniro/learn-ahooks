@@ -1,0 +1,30 @@
+# [useBoolean](https://ahooks.js.org/zh-CN/hooks/use-boolean)
+
+> 优雅的管理 boolean 状态的 Hook。
+
+部分源码：
+
+```tsx
+export default function useBoolean(defaultValue = false): [boolean, Actions] {
+  const [state, { toggle, set }] = useToggle(!!defaultValue);
+
+  const actions: Actions = useMemo(() => {
+    const setTrue = () => set(true);
+    const setFalse = () => set(false);
+    return {
+      toggle,
+      set: (v) => set(!!v),
+      setTrue,
+      setFalse,
+    };
+  }, []);
+
+  return [state, actions];
+}
+```
+
+`useBoolean` 可以保证在任何时候，`state` 的值都是 `boolean` 类型，而不是其他值。
+
+在进行初始化和设置值的时候，都会通过 `!!` 操作进行类型转换，保证 `state` 的值是 `boolean` 类型。
+
+同时，`useBoolean` 的返回值中的**写**操作都是会强制设置 `true` 和 `false`。
