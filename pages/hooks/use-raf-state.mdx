@@ -1,0 +1,29 @@
+# [useRafState](https://ahooks.js.org/zh-CN/hooks/use-raf-state)
+
+> 只在 [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) callback 时更新 state，一般用于性能优化。
+
+部分源码：
+
+```tsx
+function useRafState<S>(initialState?: S | (() => S)) {
+  const ref = useRef(0);
+  const [state, setState] = useState(initialState);
+
+  const setRafState = useCallback((value: S | ((prevState: S) => S)) => {
+    cancelAnimationFrame(ref.current);
+
+    ref.current = requestAnimationFrame(() => {
+      setState(value);
+    });
+  }, []);
+
+  useUnmount(() => {
+    cancelAnimationFrame(ref.current);
+  });
+
+  return [state, setRafState] as const;
+}
+```
+
+通过 `useRef` 维持对 `requestAnimationFrame` 的返回值的引用，通过 [`useUnmount`](/hooks/use-unmount) 在组件卸载时取消动画帧的执行，
+并且在每次调用 `setRafState` 时，都会取消上一次的动画帧执行，并重新调用 `requestAnimationFrame`。

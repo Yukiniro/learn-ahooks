@@ -5,9 +5,7 @@
 - [x] useSetState
 - [x] useBoolean
 - [x] useToggle
-- [ ] useMap
-- [ ] useSet
-- [ ] useRafState
+- [x] useRafState
 - [ ] useSafeState
 - [ ] useGetState
 - [ ] useResetState
