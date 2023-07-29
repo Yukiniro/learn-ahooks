@@ -7,5 +7,5 @@
 - [x] useToggle
 - [x] useRafState
 - [ ] useSafeState
-- [ ] useGetState
+- [x] useGetState
 - [ ] useResetState
