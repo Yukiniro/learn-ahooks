@@ -1,0 +1,73 @@
+import { Callout } from 'nextra/components'
+
+# [useGetState](https://ahooks.js.org/zh-CN/hooks/use-get-state)
+
+> 给 `React.useState` 增加了一个 getter 方法，以获取当前最新值。
+
+部分源码：
+
+```tsx
+function useGetState<S>(
+  initialState: S | (() => S),
+): [S, Dispatch<SetStateAction<S>>, GetStateAction<S>];
+function useGetState<S = undefined>(): [
+  S | undefined,
+  Dispatch<SetStateAction<S | undefined>>,
+  GetStateAction<S | undefined>,
+];
+function useGetState<S>(initialState?: S) {
+  const [state, setState] = useState(initialState);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  const getState = useCallback(() => stateRef.current, []);
+
+  return [state, setState, getState];
+}
+```
+
+初次看到这个 `hook` 时会有一点点懵，因为它的实现方式和我们平时使用 `useState` 的方式有点不一样，它是通过 `useRef` 来保存 `state` 的值，然后通过 `useCallback` 来返回 `state` 的值。
+
+一般来说，我们对于这两种方式的使用没有什么区别，都可以获取到 `state`，区别无非在于一个是状态**自身**，而另一个是状态的**获取器**。
+
+那么，这两种方式有什么区别呢？
+
+<Callout type="info">区别：闭包</Callout>
+
+假设我们有这样一个需求，在组件挂载后需要在定时器中获取到 `state` 的最新值，那么我们可以这样写：
+
+```tsx
+function Test() {
+    const [state, setState, getState] = useGetState(0);
+    const handleClick = () => setState(state + 1);
+    useEffect(() => {
+        setInterval(() => {
+            console.log(state);
+        }, 1000);
+    }, []);
+    return <Button onClick={handleClick}>Click Me</Button>
+}
+```
+
+这样的实现方式是不行的，因为 `setInterval` 中的 `state` 始终是 `0`，这是因为 `setInterval` 中的 `state` 是一个**闭包**，它的值在 `useEffect` 中被缓存了下来，所以它的值始终是 `0`。
+
+那么，我们可以通过 `getState` 来获取到最新的 `state` 值：
+
+```tsx
+function Test() {
+    const [state, setState, getState] = useGetState(0);
+    const handleClick = () => setState(state + 1);
+    useEffect(() => {
+        setInterval(() => {
+            console.log(getState());
+        }, 1000);
+    }, []);
+    return <Button onClick={handleClick}>Click Me</Button>
+}
+```
+
+这样就可以获取到最新的 `state` 值了。
+
+<Callout type="error">
+    由于实现中的`stateRef.current = state` 发生在 `rendering`，所以当前版本的实现中存在状态的同步问题，如果在 `setState` 之后立即调用 `getState`，那么获取到的值是不对的，因为 `setState` 是异步的，所以需要等待 `setState` 执行完毕之后才能获取到最新的值。
+</Callout>

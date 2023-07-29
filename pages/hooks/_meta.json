@@ -6,5 +6,7 @@
     "use-toggle": "useToggle",
     "use-set-state": "useSetState",
     "use-boolean": "useBoolean",
-    "use-raf-state": "useRafState"
+    "use-raf-state": "useRafState",
+    "use-safe-state": "useSafeState",
+    "use-get-set": "useGetSet"
 }
