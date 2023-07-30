@@ -70,4 +70,5 @@ function Test() {
 
 <Callout type="error">
     由于实现中的`stateRef.current = state` 发生在 `rendering`，所以当前版本的实现中存在状态的同步问题，如果在 `setState` 之后立即调用 `getState`，那么获取到的值是不对的，因为 `setState` 是异步的，所以需要等待 `setState` 执行完毕之后才能获取到最新的值。
+    具体讨论可以参考：[useGetState 中的 getState 在同步的时候获取不到最新的数据](https://github.com/alibaba/hooks/issues/2266)
 </Callout>

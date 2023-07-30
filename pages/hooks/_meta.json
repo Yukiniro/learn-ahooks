@@ -8,5 +8,5 @@
     "use-boolean": "useBoolean",
     "use-raf-state": "useRafState",
     "use-safe-state": "useSafeState",
-    "use-get-set": "useGetSet"
+    "use-get-state": "useGetState"
 }
