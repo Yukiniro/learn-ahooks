@@ -6,7 +6,7 @@ const config: DocsThemeConfig = {
   project: {
     link: 'https://github.com/Yukiniro/learn-ahooks',
   },
-  docsRepositoryBase: 'https://github.com/Yukiniro/learn-ahooks',
+  docsRepositoryBase: 'https://github.com/Yukiniro/learn-ahooks/tree/main/',
   footer: {
     text: 'Create By Yukiniro',
   },
