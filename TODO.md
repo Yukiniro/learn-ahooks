@@ -9,3 +9,4 @@
 - [ ] useSafeState
 - [x] useGetState
 - [ ] useResetState
+- [x] useMemoizedFn
