@@ -1,0 +1,23 @@
+# [useResetState](https://ahooks.js.org/zh-CN/hooks/use-reset-state)
+
+> 提供重置 state 方法的 Hooks，用法与 `React.useState` 基本一致。
+
+部分源码：
+
+```tsx
+const useResetState = <S>(
+  initialState: S | (() => S),
+): [S, Dispatch<SetStateAction<S>>, ResetState] => {
+  const [state, setState] = useState(initialState);
+
+  const resetState = useMemoizedFn(() => {
+    setState(initialState);
+  });
+
+  return [state, setState, resetState];
+};
+```
+
+创建一个函数调用 `setState(initialState)` 可以重置 state。
+
+通过 [useMemoizedFn](./use-memoized-fn.md) 保证 `resetState` 的引用不变，避免不必要的重渲染。

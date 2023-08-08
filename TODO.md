@@ -8,5 +8,5 @@
 - [x] useRafState
 - [ ] useSafeState
 - [x] useGetState
-- [ ] useResetState
+- [x] useResetState
 - [x] useMemoizedFn
