@@ -6,5 +6,9 @@
     "href": "https://twitter.com/Yukiro94317534",
     "newWindow": true
   },
-  "hooks": "Hooks"
+  "life-cycle": "LifeCycle",
+  "state": "State",
+  "effect": "Effect",
+  "advanced": "Advanced",
+  "dom": "Dom"
 }

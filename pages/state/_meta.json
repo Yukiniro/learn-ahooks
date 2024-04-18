@@ -1,0 +1,9 @@
+{
+    "use-set-state": "useSetState",
+    "use-boolean": "useBoolean",
+    "use-toggle": "useToggle",
+    "use-raf-state": "useRafState",
+    "use-safe-state": "useSafeState",
+    "use-get-state": "useGetState",
+    "use-reset-state": "useResetState"
+}
