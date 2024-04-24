@@ -17,8 +17,7 @@ function useGetState<S = undefined>(): [
 ];
 function useGetState<S>(initialState?: S) {
   const [state, setState] = useState(initialState);
-  const stateRef = useRef(state);
-  stateRef.current = state;
+  const stateRef = useLatest(state);
 
   const getState = useCallback(() => stateRef.current, []);
 
@@ -26,7 +25,7 @@ function useGetState<S>(initialState?: S) {
 }
 ```
 
-初次看到这个 `hook` 时会有一点点懵，因为它的实现方式和我们平时使用 `useState` 的方式有点不一样，它是通过 `useRef` 来保存 `state` 的值，然后通过 `useCallback` 来返回 `state` 的值。
+初次看到这个 `hook` 时会有一点点懵，因为它的实现方式和我们平时使用 `useState` 的方式有点不一样，它是通过 `useLatest` 来保存 `state` 的值，然后通过 `useCallback` 来返回 `state` 的值。
 
 一般来说，我们对于这两种方式的使用没有什么区别，都可以获取到 `state`，区别无非在于一个是状态**自身**，而另一个是状态的**获取器**。
 
@@ -57,6 +56,9 @@ function Test() {
 function Test() {
     const [state, setState, getState] = useGetState(0);
     const handleClick = () => setState(state + 1);
+
+    // getState 在源码中通过 useCallback(, []) 来保证它的引用不会发生变化
+    // 所以此处 getState 不需要加入 useEffect 的依赖
     useEffect(() => {
         setInterval(() => {
             console.log(getState());
@@ -69,6 +71,6 @@ function Test() {
 这样就可以获取到最新的 `state` 值了。
 
 <Callout type="error">
-    由于实现中的`stateRef.current = state` 发生在 `rendering`，所以当前版本的实现中存在状态的同步问题，如果在 `setState` 之后立即调用 `getState`，那么获取到的值是不对的，因为 `setState` 是异步的，所以需要等待 `setState` 执行完毕之后才能获取到最新的值。
+    由于实现中的`stateRef.current = state` 发生在 `rendering`，所以当前版本的实现中存在状态的同步问题，如果在 `setState` 之后立即调用 `getState`，那么获取到的值是不对的，因为 `setState` 是异步的，所以 `re-render` 才能获取到最新的值。
     具体讨论可以参考：[useGetState 中的 getState 在同步的时候获取不到最新的数据](https://github.com/alibaba/hooks/issues/2266)
 </Callout>
