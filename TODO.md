@@ -29,7 +29,7 @@
   - [ ] useDebounce
   - [ ] useThrottle
   - [ ] useMap
-  - [ ] useSet
+  - [x] useSet
   - [ ] usePrevious
   - [x] useRafState
   - [x] useSafeState

@@ -3,6 +3,7 @@
     "use-boolean": "useBoolean",
     "use-toggle": "useToggle",
     "use-map": "useMap",
+    "use-set": "useSet",
     "use-raf-state": "useRafState",
     "use-safe-state": "useSafeState",
     "use-get-state": "useGetState",
