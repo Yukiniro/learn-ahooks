@@ -1,0 +1,53 @@
+# [useSet](https://ahooks.js.org/zh-CN/hooks/use-set)
+
+> 管理 Set 类型状态的 Hook
+
+部分源码：
+
+```tsx
+function useSet<K>(initialValue?: Iterable<K>) {
+  const getInitValue = () => new Set(initialValue);
+  const [set, setSet] = useState<Set<K>>(getInitValue);
+
+  const add = (key: K) => {
+    if (set.has(key)) {
+      return;
+    }
+    setSet((prevSet) => {
+      const temp = new Set(prevSet);
+      temp.add(key);
+      return temp;
+    });
+  };
+
+  const remove = (key: K) => {
+    if (!set.has(key)) {
+      return;
+    }
+    setSet((prevSet) => {
+      const temp = new Set(prevSet);
+      temp.delete(key);
+      return temp;
+    });
+  };
+
+  const reset = () => setSet(getInitValue());
+
+  return [
+    set,
+    {
+      add: useMemoizedFn(add),
+      remove: useMemoizedFn(remove),
+      reset: useMemoizedFn(reset),
+    },
+  ] as const;
+}
+```
+
+`useSet` 通过 `useState` 来维持一个 `Set` 类型的状态，然后提供 `set` 和 `remove` 等方法来更新状态。
+
+跟 `useMap` 类似，`add` 和 `remove` 方法都内都会使用档期 set 新建一个 `Set` 实例，然后通过 `setSet` 来更新状态。
+
+`reset` 方法会使用 `initialValue` 重置状态为初始值。
+
+提供到外部的方法都通过 `useMemoizedFn` 来保持稳定引用。
