@@ -1,0 +1,29 @@
+# [usePrevious](https://ahooks.js.org/zh-CN/hooks/use-previous)
+
+> 保存上一次状态的 Hook。
+
+部分源码：
+
+```tsx
+const defaultShouldUpdate = <T>(a?: T, b?: T) => !Object.is(a, b);
+
+function usePrevious<T>(
+  state: T,
+  shouldUpdate: ShouldUpdateFunc<T> = defaultShouldUpdate,
+): T | undefined {
+  const prevRef = useRef<T>();
+  const curRef = useRef<T>();
+
+  if (shouldUpdate(curRef.current, state)) {
+    prevRef.current = curRef.current;
+    curRef.current = state;
+  }
+
+  return prevRef.current;
+}
+```
+
+使用 `useRef` 创建两个引用，分别保存上一次和当前的状态。每次渲染时，如果状态发生变化，就将当前状态保存到上一次状态中。
+
+`shouldUpdate` 函数用于判断是否需要更新上一次状态，默认情况下使用 [`Object.is`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 来判断。
+也可以通过 `shouldUpdate` 参数传入自定义的判断函数。
