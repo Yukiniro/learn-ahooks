@@ -2,7 +2,7 @@
 
 > 持久化 function 的 Hook，理论上，可以使用 useMemoizedFn 完全代替 useCallback。
 
-组件内的某个函数如果作为副作用或者其他组件的 `props` 的话一般会使用 `useCallback` 进行包裹，以保证每次渲染时都是同一个函数引用，避免不必要的重复渲染。
+组件内的某个函数如果作为副作用依赖或者其他组件的 `props` 的话一般会使用 `useCallback` 进行包裹，以保证每次渲染时都是同一个函数引用，避免不必要的重复渲染。
 
 
 ```tsx
@@ -12,7 +12,7 @@ const fn = () => {
 };
 ```
 
-上述代码中，`fn` 会在每次渲染时都会重新创建，如果作为副作用的话，每次都会重新执行，如果作为 `props` 的话，每次都会触发子组件的重新渲染。
+上述代码中，`fn` 会在每次渲染时都会重新创建，如果作为副作用的话，每次都会重新执行，如果作为 `props` 的话，每次都会导致子组件的 `memo` 失效。
 
 
 ```tsx
@@ -24,7 +24,7 @@ const fn = useCallback(() => {
 
 使用 `useCallback` 包裹后，`fn` 会在 `state` 变化时才会重新创建，其他情况下都是同一个函数。
 
-虽然减少了 `fn` 的创建，但是如果我希望 `fn` 始终不变呢？
+虽然减少了 `fn` 的创建，但是如果希望 `fn` 始终不变并能访问到最新的 `state` 呢？
 
 答案很明显，我们可以通过 `useRef` 来实现：
 
@@ -33,12 +33,21 @@ const fn = useCallback(() => {
 const fnRef = useRef(() => {
   console.log(state);
 });
+
+fnRef.current = useMemo<T>(() => fn, [fn]);
 ```
 
-但是这样的话，`fn` 就不会响应 `state` 的变化了，也就是说每次打印的都是初始的 `state`, 
-如果我希望 `fn` 始终不变，但是又希望它能响应 `state` 的变化呢？
+`fnRef` 会在每次渲染时都会保持同一个引用，然后通过 `useMemo` 来保持 `fn` 的稳定引用。
 
-所以，我们需要两个 `ref`，一个用来维持暴露在外的 `fn`，另一个用来维持内部的 `fn` 用来响应外界的变化。
+至于这里为什么不直接 `fnRef.current = fn` 呢？
+
+是因为跟 react devtool 存在兼容性问题，详情可以查看：
+1. https://github.com/alibaba/hooks/issues/728
+2. https://github.com/facebook/react/issues/20394
+
+`useMemoizedFn` 最主要的目的是不管 `fn` 是否变化，都能返回给外部一个稳定的引用，而不是每次都重新创建。
+
+所以，需要创建一个 `outRef` 来维持唯一的 `function` 引用并返回给外部。
 
 ```tsx
 
@@ -85,4 +94,6 @@ function useMemoizedFn<T extends noop>(fn: T) {
   return memoizedFn.current as T;
 }
 ```
+
+import { useMemo } from "react"
 

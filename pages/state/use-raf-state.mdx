@@ -25,5 +25,5 @@ function useRafState<S>(initialState?: S | (() => S)) {
 }
 ```
 
-通过 `useRef` 维持对 `requestAnimationFrame` 的返回值的引用，通过 [`useUnmount`](/hooks/use-unmount) 在组件卸载时取消动画帧的执行，
+`setRafState` 接口接受即将更新的值，然后在 `requestAnimationFrame` 中更新 `state`， 并且通过 `useRef` 维持对 `requestAnimationFrame` 的返回值的引用，通过 [`useUnmount`](/life-cycle/use-unmount) 在组件卸载时取消动画帧的执行，
 并且在每次调用 `setRafState` 时，都会取消上一次的动画帧执行，并重新调用 `requestAnimationFrame`。

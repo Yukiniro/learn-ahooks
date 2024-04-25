@@ -27,4 +27,4 @@ export default function useBoolean(defaultValue = false): [boolean, Actions] {
 
 在进行初始化和设置值的时候，都会通过 `!!` 操作进行类型转换，保证 `state` 的值是 `boolean` 类型。
 
-同时，`useBoolean` 的返回值中的**写**操作都是会强制设置 `true` 和 `false`。
+同时，`useBoolean` 的返回值中的 `set` 会将传入的值转换为布尔值。

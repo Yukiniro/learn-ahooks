@@ -30,7 +30,7 @@ function useToggle<D, R>(defaultValue: D = false as unknown as D, reverseValue?:
 }
 ```
 
-`useToggle` 接收两个参数，第一个参数是默认值，第二个参数是反转值，如果两个参数都不传的话，那么默认值和反转值就是 `true` 和 `false`。
+`useToggle` 接收两个参数，第一个参数是默认值，第二个参数是反转值，如果两个参数都不传的话，那么默认值和反转值就是 `false` 和 `true`。
 
 一般来说，只传递一个参数或者都不传的场景适用于真假值的判断，比如：
 
@@ -58,4 +58,6 @@ function Test() {
 
 `toggle` 在前面已经说了，主要用来进行切换。`setLeft` 和 `setRight` 也比较容易理解，就是分别设置默认值和反转值。`set` 则是直接设置状态值，这个方法可以接收一个参数并设置为传递的参数。
 
-<Callout>需要注意的是，`set` 的操作是一次性的，如果后面调用了其他接口（`toggle`）会将值设置为其他值。</Callout>
+<Callout>
+  需要注意的是，`set` 的操作具有传染性，会将状态值设置为 `set` 的参数，由于 `toggle` 接口中切换的判断时 `s === defaultValue`，所以当使用 `set` 设置状态值后，只要该值不等于默认值，那么 `toggle` 就会切换到反转值。
+</Callout>
