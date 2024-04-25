@@ -21,7 +21,7 @@
 - State
   - [x] useSetState
   - [x] useBoolean
-  - [ ] useToggle
+  - [x] useToggle
   - [ ] useUrlState
   - [ ] useCookieState
   - [ ] useLocalStorageState
