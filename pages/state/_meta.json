@@ -4,6 +4,7 @@
     "use-toggle": "useToggle",
     "use-map": "useMap",
     "use-set": "useSet",
+    "use-previous": "usePrevious",
     "use-raf-state": "useRafState",
     "use-safe-state": "useSafeState",
     "use-get-state": "useGetState",
