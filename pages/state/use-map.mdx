@@ -1,0 +1,55 @@
+# [useMap](https://ahooks.js.org/zh-CN/hooks/use-map)
+
+> 管理 Map 类型状态的 Hook。
+
+部分源码：
+
+```tsx
+function useMap<K, T>(initialValue?: Iterable<readonly [K, T]>) {
+  const getInitValue = () => new Map(initialValue);
+  const [map, setMap] = useState<Map<K, T>>(getInitValue);
+
+  const set = (key: K, entry: T) => {
+    setMap((prev) => {
+      const temp = new Map(prev);
+      temp.set(key, entry);
+      return temp;
+    });
+  };
+
+  const setAll = (newMap: Iterable<readonly [K, T]>) => {
+    setMap(new Map(newMap));
+  };
+
+  const remove = (key: K) => {
+    setMap((prev) => {
+      const temp = new Map(prev);
+      temp.delete(key);
+      return temp;
+    });
+  };
+
+  const reset = () => setMap(getInitValue());
+
+  const get = (key: K) => map.get(key);
+
+  return [
+    map,
+    {
+      set: useMemoizedFn(set),
+      setAll: useMemoizedFn(setAll),
+      remove: useMemoizedFn(remove),
+      reset: useMemoizedFn(reset),
+      get: useMemoizedFn(get),
+    },
+  ] as const;
+}
+```
+
+`useMap` 通过 `useState` 来维持一个 `Map` 类型的状态，然后提供 `set` 和 `remove` 等方法来更新状态。
+
+需要注意的是，`set` 和 `remove` 方法都内都会使用档期 map 新建一个 `Map` 实例，然后通过 `setMap` 来更新状态。
+
+`reset` 方法会使用 `initialValue` 重置状态为初始值。
+
+提供到外部的方法都通过 `useMemoizedFn` 来保持稳定引用。
