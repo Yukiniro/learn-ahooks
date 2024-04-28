@@ -23,7 +23,7 @@
   - [x] useBoolean
   - [x] useToggle
   - [ ] useUrlState
-  - [ ] useCookieState
+  - [x] useCookieState
   - [ ] useLocalStorageState
   - [ ] useSessionStorageState
   - [ ] useDebounce
