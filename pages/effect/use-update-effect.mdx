@@ -1,0 +1,40 @@
+# [useUpdateEffect](https://ahooks.js.org/zh-CN/hooks/use-update-effect)
+
+> `useUpdateEffect` 用法等同于 `useEffect`，但是会忽略首次执行，只在依赖更新时执行。
+
+## 部分源码：
+
+```typescript
+// createUpdateEffect.ts
+export const createUpdateEffect: (hook: EffectHookType) => EffectHookType =
+  (hook) => (effect, deps) => {
+    const isMounted = useRef(false);
+
+    // for react-refresh
+    hook(() => {
+      return () => {
+        isMounted.current = false;
+      };
+    }, []);
+
+    hook(() => {
+      if (!isMounted.current) {
+        isMounted.current = true;
+      } else {
+        return effect();
+      }
+    }, deps);
+  };
+
+// useUpdateEffect.ts
+export const useUpdateEffect = createUpdateEffect(useEffect);
+```
+
+`useEffect` 和 `useLayoutEffect` 的会在组件挂载后执行一次 `effect`，然后在后续的渲染后判断依赖是否变化，
+如果变化则执行 `effect`。
+
+通过 `useRef` 创建一个 `isMounted` 的状态，用来判断是否是首次执行。通过 `hook` 函数，将 `effect` 和 `deps` 传入，
+
+因为 `useUpdateEffect` 只希望在 `deps` 变化时执行 `effect`，所以第一个 `hook` 调用中传入空依赖且不进行 `effect`,
+在清理函数中，将 `isMounted` 设置为 `false`。第二个 `hook` 调用中，通过`isMounted` 的状态，用来判断是否是首次执行。
+如果 `isMounted` 为 `false`，则将其设置为 `true`，否则执行 `effect`。
