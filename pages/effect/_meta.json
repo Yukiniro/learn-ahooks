@@ -1,5 +1,6 @@
 {
     "use-update-effect": "useUpdateEffect",
     "use-update-layout-effect": "useUpdateEffect",
-    "use-async-effect": "useAsyncEffect"
+    "use-async-effect": "useAsyncEffect",
+    "use-deep-compare-effect": "useDeepCompareEffect"
 }
