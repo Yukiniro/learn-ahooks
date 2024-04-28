@@ -2,6 +2,7 @@
     "use-set-state": "useSetState",
     "use-boolean": "useBoolean",
     "use-toggle": "useToggle",
+    "use-cookie-state": "useCookieState",
     "use-map": "useMap",
     "use-set": "useSet",
     "use-previous": "usePrevious",

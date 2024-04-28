@@ -1,0 +1,48 @@
+# [useUrlState](https://ahooks.js.org/zh-CN/hooks/use-url-state)
+
+> 一个可以将状态存储在 Cookie 中的 Hook 。
+
+## 部分源码
+
+```tsx
+function useCookieState(cookieKey: string, options: Options = {}) {
+  const [state, setState] = useState<State>(() => {
+    const cookieValue = Cookies.get(cookieKey);
+
+    if (isString(cookieValue)) return cookieValue;
+
+    if (isFunction(options.defaultValue)) {
+      return options.defaultValue();
+    }
+
+    return options.defaultValue;
+  });
+
+  const updateState = useMemoizedFn(
+    (
+      newValue: State | ((prevState: State) => State),
+      newOptions: Cookies.CookieAttributes = {},
+    ) => {
+      const { defaultValue, ...restOptions } = { ...options, ...newOptions };
+      const value = isFunction(newValue) ? newValue(state) : newValue;
+
+      setState(value);
+
+      if (value === undefined) {
+        Cookies.remove(cookieKey);
+      } else {
+        Cookies.set(cookieKey, value, restOptions);
+      }
+    },
+  );
+
+  return [state, updateState] as const;
+}
+```
+
+`useCookieState` 通过 `js-cookie` 来存储状态，它接受两个参数，第一个参数是 `cookieKey`，第二个参数是 `options`，`options` 中可以传入 `defaultValue` 来设置默认值。
+
+在进行组件初始化时，`useCookieState` 会通过 `Cookies.get(cookieKey)` 先从 `cookie` 中获取到 `cookieKey` 对应的值，如果值存在，则返回该值，否则返回 `defaultValue`(如果是函数的话就返回该函数的调用结果)。
+
+`updateState` 是一个使用 `useMemoizedFn` 返回的稳定更新函数，它接受两个参数，第一个参数是 `newValue`，第二个参数是 `newOptions`，`newValue` 可以是一个值，也可以是一个函数，如果是函数的话，
+它会接受 `state` 作为参数，返回一个新的值，然后通过 `setState` 来更新 `state`，最后通过 `Cookies.set` 或者 `Cookies.remove` 来更新 `cookie`。
