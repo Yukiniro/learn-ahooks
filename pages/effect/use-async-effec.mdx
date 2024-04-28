@@ -1,0 +1,77 @@
+# [useAsyncEffect](https://ahooks.js.org/zh-CN/hooks/use-async-effect)
+
+> `useEffect` 支持异步函数。
+
+## 部分源码：
+
+```tsx
+function useAsyncEffect(
+  effect: () => AsyncGenerator<void, void, void> | Promise<void>,
+  deps?: DependencyList,
+) {
+  useEffect(() => {
+    const e = effect();
+    let cancelled = false;
+    async function execute() {
+      if (isAsyncGenerator(e)) {
+        while (true) {
+          const result = await e.next();
+          if (result.done || cancelled) {
+            break;
+          }
+        }
+      } else {
+        await e;
+      }
+    }
+    execute();
+    return () => {
+      cancelled = true;
+    };
+  }, deps);
+}
+```
+
+`useEffect` 本身不支持异步函数，因为需要在 `effect` 函数中同步返回一个清理函数。
+
+所以，`useAsyncEffect` 的实现思路是允许传入异步函数，但是内部传递到 `useEffect` 时传入同步函数，然后在同步函数中执行异步逻辑。
+
+在 `useEffect` 中，会直接执行 `effect` 函数，将 `cancelled` 设置为 `false`，然后根据 `effect` 函数的返回值类型来判断是 `Promise` 还是 `AsyncGenerator`并执行对应的逻辑。
+
+如果 `effect` 函数返回的是 `AsyncGenerator`，会通过判断 `cancelled` 和 `done` 来决定是否继续执行。`done` 比较容易理解，就是标识这次的 `generate` 是否结束。
+`cancelled` 主要标识是否过期（响应最新的 `deps`），如果过期就不再执行，每次的清理函数都会将 `cancelled` 设置为 `true`。比如下面的 demo:
+
+```tsx
+export default () => {
+  const [value, setValue] = useState('');
+  const [pass, setPass] = useState<boolean>();
+
+  useAsyncEffect(
+    async function* () {
+      setPass(undefined);
+      const result = await mockCheck(value);
+      // 这里在 useAsyncEffect 内部通过 cancelled 来判断是否过期。
+      // 所以只会响应到最新 value 的校验结果。
+      yield;
+      setPass(result);
+    },
+    [value],
+  );
+
+  return (
+    <div>
+      <input
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+      />
+      <p>
+        {pass === null && 'Checking...'}
+        {pass === false && 'Check failed.'}
+        {pass === true && 'Check passed.'}
+      </p>
+    </div>
+  );
+};
+```
