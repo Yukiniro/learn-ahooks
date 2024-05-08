@@ -2,5 +2,6 @@
     "use-update-effect": "useUpdateEffect",
     "use-update-layout-effect": "useUpdateEffect",
     "use-async-effect": "useAsyncEffect",
-    "use-deep-compare-effect": "useDeepCompareEffect"
+    "use-deep-compare-effect": "useDeepCompareEffect",
+    "use-interval": "useInterval"
 }

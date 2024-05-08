@@ -45,7 +45,7 @@
   - [ ] useThrottleEffect
   - [x] useDeepCompareEffect
   - [x] useDeepCompareLayoutEffect
-  - [ ] useInterval
+  - [x] useInterval
   - [ ] useRafInterval
   - [ ] useTimeout
   - [ ] useRafTimeout

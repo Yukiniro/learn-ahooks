@@ -1,0 +1,65 @@
+# [useInterval](https://ahooks.js.org/zh-CN/hooks/use-interval)
+
+import { Callout } from 'nextra/components'
+
+> 一个可以处理 setInterval 的 Hook。
+
+在某些场景下，我们需要在组件挂载后，每隔一段时间执行一次某个操作，这时候我们会用到 `setInterval`。
+
+```jsx
+useEffect(() => {
+    const timer = setInterval(() => {
+        // do something
+    }, 1000);
+
+    return () => clearInterval(timer);
+}, []);
+```
+
+但是有多个这样的场景，我们需要写多个 `useEffect`，这时候 `useInterval` 就派上用场了。
+
+```jsx
+useInterval(() => {
+    // do something
+}, 1000, { immediate: true });
+```
+
+## 部分源码
+
+```tsx
+const useInterval = (fn: () => void, delay?: number, options: { immediate?: boolean } = {}) => {
+  const timerCallback = useMemoizedFn(fn);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clear = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isNumber(delay) || delay < 0) {
+      return;
+    }
+    if (options.immediate) {
+      timerCallback();
+    }
+    timerRef.current = setInterval(timerCallback, delay);
+    return clear;
+  }, [delay, options.immediate]);
+
+  return clear;
+};
+```
+
+首先是通过 `useMemoizedFn` 缓存了 `fn`，然后通过 `useRef` 缓存了 `setInterval` 的返回值，通过
+`useCallback` 缓存清除定时器的函数 `clear`，因为 `clear` 函数既需要在组件卸载时调用，也需要传递给
+外部进行业务处理（如果需要的话）。
+
+然后通过 `useEffect` 监听 `delay` 和 `options.immediate` 的变化，如果 `delay` 为负数或者不是数字，
+则直接返回，否则根据 `options.immediate` 来决定是否立即执行一次 `fn`，然后通过 `setInterval` 来
+执行 `fn`，并返回清除定时器的函数 `clear`。
+
+<Callout type="info">
+  `clear` 没有加入到 `useEffect` 依赖项，因为 `clear` 是一个稳定的函数，不会发生变化。不过加入也无妨。
+</Callout>
