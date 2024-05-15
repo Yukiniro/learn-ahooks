@@ -3,5 +3,6 @@
     "use-update-layout-effect": "useUpdateEffect",
     "use-async-effect": "useAsyncEffect",
     "use-deep-compare-effect": "useDeepCompareEffect",
-    "use-interval": "useInterval"
+    "use-interval": "useInterval",
+    "use-raf-interval": "useRafInterval"
 }
