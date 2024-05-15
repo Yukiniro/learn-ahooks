@@ -1,0 +1,101 @@
+# [useRafInterval](https://ahooks.js.org/zh-CN/hooks/use-raf-interval)
+
+> 用 requestAnimationFrame 模拟实现 setInterval，API 和 useInterval 保持一致，好处是可以在页面不渲染的时候停止执行定时器，比如页面隐藏或最小化等。
+
+[`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) 
+是浏览器提供的一个 API，用于在下次重绘之前执行回调函数。它的主要用途是实现动画效果，但是也可以用来实现定时器。
+
+`requestAnimationFrame` 的执行频率取决于浏览器的刷新频率，通常是每秒 60 次，但是在不可见的页面中（比如后台运行或者隐藏的 iframe），浏览器会降低刷新频率，甚至停止刷新。
+
+所以，`useRafInterval` 主要是依赖不断的调用 `requestAnimationFrame` 并且在 `callback` 中用当前时间戳和第一次运行的时间戳计算差值来模拟 `setInterval`。
+
+## 部分源码
+
+```tsx
+function useRafInterval(
+  fn: () => void,
+  delay: number | undefined,
+  options?: {
+    immediate?: boolean;
+  },
+) {
+  const immediate = options?.immediate;
+
+  const fnRef = useLatest(fn);
+  const timerRef = useRef<Handle>();
+
+  const clear = useCallback(() => {
+    if (timerRef.current) {
+      clearRafInterval(timerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isNumber(delay) || delay < 0) {
+      return;
+    }
+    if (immediate) {
+      fnRef.current();
+    }
+    timerRef.current = setRafInterval(() => {
+      fnRef.current();
+    }, delay);
+    return clear;
+  }, [delay]);
+
+  return clear;
+}
+```
+
+首先是通过 `useLatest` 确保 `fn` 最新引用，然后通过 `useRef` 创建一个 `timerRef`，用于保存 `requestAnimationFrame` 的返回值以便后续进行 `cancelAnimationFrame`。
+
+`useEffect` 中先判断 `delay` 是否合法，如果不合法的话直接返回，然后根据 `immediate` 来决定是否立即执行一次 `fn`，然后调用 `setRafInterval` 来启动定时器。
+
+最后返回一个 `clear` 函数，用于清除定时器。
+
+```tsx
+const setRafInterval = function (callback: () => void, delay: number = 0): Handle {
+  if (typeof requestAnimationFrame === typeof undefined) {
+    return {
+      id: setInterval(callback, delay),
+    };
+  }
+  let start = Date.now();
+  const handle: Handle = {
+    id: 0,
+  };
+  const loop = () => {
+    const current = Date.now();
+    if (current - start >= delay) {
+      callback();
+      start = Date.now();
+    }
+    handle.id = requestAnimationFrame(loop);
+  };
+  handle.id = requestAnimationFrame(loop);
+  return handle;
+};
+```
+
+`setRafInterval` 函数中，如果浏览器不支持 `requestAnimationFrame`，则直接降级为 `setInterval`。
+
+通过 `Date.now()` 记录当前的时间戳 `start`，然后在 `loop` 函数中不断调用 `requestAnimationFrame`，
+在每次调用中计算当前时间戳和 `start` 的差值，如果大于等于 `delay`，则执行 `callback` 并更新 `start`。 
+
+每次执行 `requestAnimationFrame` 后将返回值保存到 `handle.id` 中，以便后续取消。
+
+```tsx
+function cancelAnimationFrameIsNotDefined(t: any): t is ReturnType<typeof setInterval> {
+  return typeof cancelAnimationFrame === typeof undefined;
+}
+
+const clearRafInterval = function (handle: Handle) {
+  if (cancelAnimationFrameIsNotDefined(handle.id)) {
+    return clearInterval(handle.id);
+  }
+  cancelAnimationFrame(handle.id);
+};
+```
+
+`clearRafInterval` 函数中，如果浏览器不支持 `cancelAnimationFrame`，则直接降级为 `clearInterval`。
+`handle.id` 是 `requestAnimationFrame` 或者 `setInterval` 的返回值，用于取消定时器。
