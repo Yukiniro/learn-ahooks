@@ -1,0 +1,75 @@
+# [useLockFn](https://ahooks.js.org/zh-CN/hooks/use-lock-fn)
+
+> 用于给一个异步函数增加竞态锁，防止并发执行。
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+  竞态锁（Race Condition Lock）是计算机科学中的一个概念，它涉及到多线程或多进程环境中的同步问题。在并发编程中，当多个线程或进程尝试同时访问和修改共享资源时，可能会出现竞态条件（Race Condition）。竞态条件可能导致数据不一致或程序行为不可预测。
+</Callout>
+
+当然，JavaScript 是单线程的（不考虑 WebWorker），这里的竞态锁是指在异步函数中，防止多次调用导致的并发执行问题。
+
+比如下面的代码：
+
+```tsx
+function randomAsyncFn(value) {
+  return new Promise(resolve => {
+    const timeStamp = performance.now();
+    setTimeout(() => {
+      resolve(timeStamp);
+    }, Math.random() * 1000);
+  });
+}
+
+export default () => {
+    const [state, setState] = useState(0);
+
+    const handleClick = async () => {
+      const timeStamp = await randomAsyncFn();
+      setState(timeStamp);
+    };
+
+    return (
+      <div>
+        <button onClick={handleClick}>Click</button>
+        <div>{state}</div>
+      </div>
+    );
+}
+```
+
+由于 `randomAsyncFn` 的执行耗时是随机的，所以多次点击后 `state` 的更新可能不是预想的结果。
+
+解决这个问题的方法是给 `handleClick` 函数增加一个竞态锁，保证在上一次异步函数执行完之前，不会再次执行。比如，
+在第一次执行时标记为“正在执行”，在执行完之后标记为“未执行”，这样后续的点击事件进来时就判断是否正在执行，
+如果是则直接返回。
+
+## 部分源码
+
+```tsx
+function useLockFn<P extends any[] = any[], V = any>(fn: (...args: P) => Promise<V>) {
+  const lockRef = useRef(false);
+
+  return useCallback(
+    async (...args: P) => {
+      if (lockRef.current) return;
+      lockRef.current = true;
+      try {
+        const ret = await fn(...args);
+        return ret;
+      } catch (e) {
+        throw e;
+      } finally {
+        lockRef.current = false;
+      }
+    },
+    [fn],
+  );
+}
+
+export default useLockFn;
+```
+
+通过 `lockRef` 来标识是否“正在执行”，如果是则直接返回，否则标记为“正在执行”（`lockRef.current = true`），
+执行异步函数，最后标记为“未执行”（`lockRef.current = false`）。

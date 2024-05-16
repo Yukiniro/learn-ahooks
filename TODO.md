@@ -49,7 +49,7 @@
   - [x] useRafInterval
   - [x] useTimeout
   - [x] useRafTimeout
-  - [ ] useLockFn
+  - [x] useLockFn
   - [ ] useUpdate
 - Dom
   - [ ] useEventListener
