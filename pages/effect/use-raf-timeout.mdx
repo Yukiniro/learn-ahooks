@@ -1,0 +1,5 @@
+# [useRafTimeout](https://ahooks.js.org/zh-CN/hooks/use-raf-timeout)
+
+> 用 `requestAnimationFrame` 模拟实现 `setTimeout`，API 和 `useTimeout` 保持一致，好处是可以在页面不渲染的时候不触发函数执行，比如页面隐藏或最小化等。
+
+整体实现思路跟 [`useRafInterval`](./use-raf-interval) 类似，都是通过不断进行 `requestAnimationFrame` 判断运行时长是否超过指定 `delay`，只是这里是模拟实现 `setTimeout`。

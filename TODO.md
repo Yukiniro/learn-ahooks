@@ -48,7 +48,7 @@
   - [x] useInterval
   - [x] useRafInterval
   - [x] useTimeout
-  - [ ] useRafTimeout
+  - [x] useRafTimeout
   - [ ] useLockFn
   - [ ] useUpdate
 - Dom
