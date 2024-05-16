@@ -1,0 +1,35 @@
+# [useTimeout](https://ahooks.js.org/zh-CN/hooks/use-timeout)
+
+> 一个可以处理 setTimeout 计时器函数的 Hook。
+
+## 部分源码
+
+```tsx
+const useTimeout = (fn: () => void, delay?: number) => {
+  const timerCallback = useMemoizedFn(fn);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clear = useCallback(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isNumber(delay) || delay < 0) {
+      return;
+    }
+    timerRef.current = setTimeout(timerCallback, delay);
+    return clear;
+  }, [delay]);
+
+  return clear;
+};
+
+export default useTimeout;
+```
+
+首先是通过 `useMemoizedFn` 缓存了 `fn`，然后通过 `useRef` 缓存了 `setTimeout` 的返回值，
+通过 `useCallback` 缓存清除定时器的函数 `clear`，因为 `clear` 函数既需要在组件卸载时调用，也需要传递给外部进行业务处理（如果需要的话）。
+
+在 `useEffect` 中判断 `delay` 是否合法，如果不合法的话直接返回，否则调用 `setTimeout` 来启动定时器，并返回一个 `clear` 函数，用于清除定时器。
