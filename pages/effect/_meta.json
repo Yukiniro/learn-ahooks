@@ -7,5 +7,6 @@
     "use-raf-interval": "useRafInterval",
     "use-timeout": "useTimeout",
     "use-raf-timeout": "useRafTimeout",
-    "use-lock-fn": "useLockFn"
+    "use-lock-fn": "useLockFn",
+    "use-update": "useUpdate"
 }

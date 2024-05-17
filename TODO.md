@@ -50,7 +50,7 @@
   - [x] useTimeout
   - [x] useRafTimeout
   - [x] useLockFn
-  - [ ] useUpdate
+  - [x] useUpdate
 - Dom
   - [ ] useEventListener
   - [ ] useClickAway
