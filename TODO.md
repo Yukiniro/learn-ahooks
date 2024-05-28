@@ -59,7 +59,7 @@
   - [ ] useEventTarget
   - [ ] useExternal
   - [x] useTitle
-  - [ ] useFavicon
+  - [x] useFavicon
   - [ ] useFullscreen
   - [ ] useHover
   - [ ] useMutationObserver
